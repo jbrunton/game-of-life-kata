@@ -10,7 +10,7 @@ class Game
   def play
     survivors = @counters.select do |counter|
       neighbors = find_neighbors(counter)
-      neighbors.size >= 2
+      neighbors.size >= 2 && neighbors.size < 4
     end
     @counters = survivors
   end
@@ -106,6 +106,19 @@ describe "Game" do
       it "should survive after a play" do
         @game.play
         expect(@game.active_counters).to eq([ {x: 1, y: 1} ])
+      end
+    end
+  end
+  
+  context "overpopulation rule" do
+    context "if the cell has 4 neighbors" do
+      before(:each) do
+        @game = Game.new([ {x: 0, y: 1}, {x: 1, y: 0}, {x: 1, y: 1}, {x: 2, y: 1}, {x: 1, y: 2} ])
+      end
+      
+      it "should die after a play" do
+        @game.play
+        expect(@game.active_counters).to eq([ {x: 0, y: 1}, {x: 1, y: 0}, {x: 2, y: 1}, {x: 1, y: 2} ])
       end
     end
   end
