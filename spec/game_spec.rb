@@ -40,14 +40,27 @@ describe "Game" do
     end
   end
   
-  context "if the cell has no neighbours" do
-    before(:each) do
-      @game = Game.new([ {x: 0, y: 0} ])
+  context "underpopulation rule do" do
+    context "if the cell has no neighbours" do
+      before(:each) do
+        @game = Game.new([ {x: 0, y: 0} ])
+      end
+    
+      it "should die after a play" do
+        @game.play
+        expect(@game.active_counters).to be_empty
+      end
     end
     
-    it "should die after a play" do
-      @game.play
-      expect(@game.active_counters).to be_empty
+    context "if the cell has 1 neighbour" do
+      before(:each) do
+        @game = Game.new([ {x: 0, y: 0}, {x: 1, y: 0} ])
+      end
+    
+      it "should die after a play" do
+        @game.play
+        expect(@game.active_counters).to be_empty
+      end
     end
   end
   
