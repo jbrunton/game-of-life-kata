@@ -10,7 +10,7 @@ class Game
   def play
     survivors = @counters.select do |counter|
       neighbors = find_neighbors(counter)
-      neighbors.size == 2
+      neighbors.size >= 2
     end
     @counters = survivors
   end
@@ -20,7 +20,7 @@ private
     @counters.select do |candidate|
       delta_x = (candidate[:x] - counter[:x]).abs
       delta_y = (candidate[:y] - counter[:y]).abs
-      delta_x ^ delta_y == 1
+      delta_x ^ delta_y == 1 || delta_x * delta_y == 1
     end
   end
 end
@@ -71,6 +71,28 @@ describe "Game" do
       it "should survice after a play" do
         @game.play
         expect(@game.active_counters).to eq([ {x: 0, y: 1} ])
+      end
+    end
+    
+    context "if the cell has 2 diagonal neighbors" do
+      before(:each) do
+        @game = Game.new([ {x: 0, y: 0}, {x: 1, y: 1}, {x: 2, y: 2} ])
+      end
+      
+      it "should survive after a play" do
+        @game.play
+        expect(@game.active_counters).to eq([ {x: 1, y: 1} ])
+      end
+    end
+    
+    context "if the cell has 3 neighbors" do
+      before(:each) do
+        @game = Game.new([ {x: 0, y: 0}, {x: 1, y: 1}, {x: 2, y: 0}, {x: 2, y: 2} ])
+      end
+      
+      it "should survive after a play" do
+        @game.play
+        expect(@game.active_counters).to eq([ {x: 1, y: 1} ])
       end
     end
   end
