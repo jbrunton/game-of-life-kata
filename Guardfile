@@ -11,5 +11,6 @@
 #  * 'just' rspec: 'rspec'
 guard :rspec, cmd: 'bundle exec rspec --color --format doc' do
   watch(%r{^spec/.+_spec\.rb$})
+  watch('spec/spec_helper.rb') { "spec" }
 end
 
