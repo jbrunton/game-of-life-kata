@@ -1,3 +1,5 @@
+require_relative File.expand_path('game')
+
 module HelperMethods
   def initialize_board(*rows)
     initial_cells = convert_to_cells(rows)
