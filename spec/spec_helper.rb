@@ -13,7 +13,7 @@ module HelperMethods
   def expect_board(*rows)
     expected_cells = convert_to_cells(rows)
     actual_cells = @game.active_cells.sort do |a,b|
-      result = a[:y] <=> b[:y]
+      result = b[:y] <=> a[:y]
       result = a[:x] <=> b[:x] if result.zero?
       result
     end
