@@ -8,6 +8,7 @@ class Game
   end
   
   def play
+    @active_cells = []
   end
 end
 
