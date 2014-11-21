@@ -73,6 +73,25 @@ describe "Rules" do
     end
   end
   
+  context "overcrowding rule" do
+    context "if a cell has 4 neighbors" do
+      before(:each) do
+        initialize_board \
+          [0,1,0],
+          [1,1,1],
+          [0,1,0]
+        play
+      end
+    
+      it "should die of overcrowding" do
+        expect_board \
+          [1,1,1],
+          [1,0,1],
+          [1,1,1]
+      end
+    end
+  end
+  
   context "reproduction rule" do
     context "if an empty cell has 3 live neighbors" do
       before(:each) do

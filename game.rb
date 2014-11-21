@@ -8,37 +8,42 @@ class Game
   end
   
   def play
-    survivors = @active_cells.select{ |cell| active_neighbor_count(cell) >= 2 }
-    offspring = @active_cells.map{ |cell| empty_neighbors_of(cell) }.
-      flatten.
-      uniq.
-      select{ |cell| active_neighbor_count(cell) >= 3 }
     @active_cells = (survivors + offspring).uniq
   end
   
+  def survivors
+    @active_cells.select{ |cell| should_survive(cell) }
+  end
+  
+  def offspring
+    @active_cells.map{ |cell| neighbors_of(cell) }.
+      flatten.
+      uniq.
+      select{ |cell| should_reproduce(cell) }
+  end
+
   def active_neighbor_count(cell)
-    @active_cells.select{ |active_cell| Game.are_neighbors(cell, active_cell) }.size
+    neighbors_of(cell).select{ |neighbor| alive?(neighbor) }.size
   end
   
-  def empty_neighbors_of(cell)
-    empty_neighbors = []
-    [-1,0,1].each do |offset_x|
-      [-1,0,1].each do |offset_y|
-        unless offset_x.zero? && offset_y.zero?
-          candidate_cell = {x: cell[:x] + offset_x, y: cell[:y] + offset_y}
-          empty_neighbors.push(candidate_cell) unless @active_cells.include?(candidate_cell)
-        end
-      end
+private
+  def neighbors_of(cell)
+    NEIGHBOR_OFFSETS.map do |offset_x, offset_y|
+      {x: cell[:x] + offset_x, y: cell[:y] + offset_y}
     end
-    empty_neighbors
+  end
+
+  NEIGHBOR_OFFSETS = [ [-1,-1], [-1, 0], [-1, 1], [0, -1], [0,  1], [1, -1], [1,  0], [1,  1] ]
+
+  def should_survive(cell)
+    alive?(cell) && active_neighbor_count(cell).between?(2, 3)
   end
   
-  def self.are_neighbors(cell1, cell2)
-    delta_x = (cell1[:x] - cell2[:x]).abs
-    delta_y = (cell1[:y] - cell2[:y]).abs
-    
-    (delta_x + delta_y) > 0 &&
-      delta_x <= 1 &&
-      delta_y <= 1
+  def should_reproduce(cell)
+    !alive?(cell) && active_neighbor_count(cell) >= 3
+  end
+  
+  def alive?(cell)
+    @active_cells.include?(cell)
   end
 end
