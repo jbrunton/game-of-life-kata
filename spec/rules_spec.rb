@@ -54,5 +54,22 @@ describe "Rules" do
           [0,0,0]
       end
     end
+    
+    context "if the cell has 3 neighbors" do
+      before(:each) do
+        initialize_board \
+          [0,1,0],
+          [0,1,0],
+          [1,0,1]
+        play
+      end
+      
+      it "should survive" do
+        expect_board \
+          [0,0,0],
+          [0,1,0],
+          [0,0,0]
+      end
+    end
   end
 end
