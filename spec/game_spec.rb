@@ -1,17 +1,22 @@
-class Game
-  def initialize(counters)
+describe "Game" do
+  class Game
+    attr_reader :live_cells
+    def initialize(initial_cells)
+      @live_cells = initial_cells
+    end
   end
   
-  def active_counters
-    []
+  context "#initialize" do
+    it "initializes the instance" do
+      initial_cells = [{ :x => 1, :y => 1 }]
+      game = Game.new initial_cells
+      expect(game.live_cells).to eq(initial_cells)
+    end
   end
-end
 
-describe "Game" do
-  context "when the board is empty" do
-    it "has no active counters" do
-      game = Game.new([])
-      expect(game.active_counters).to be_empty
+  context "if there are no live cells" do
+    it "does nothing" do
+      
     end
   end
 end
