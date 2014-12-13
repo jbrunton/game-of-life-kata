@@ -8,7 +8,7 @@ describe "Game" do
     
     def tick
       survivors = @live_cells.select do |cell|
-        horizontal_neighbor_count = 0
+        neighbor_count = 0
         [
           { :x => cell[:x] - 1, :y => cell[:y] },
           { :x => cell[:x] + 1, :y => cell[:y] },
@@ -19,9 +19,9 @@ describe "Game" do
           { :x => cell[:x] + 1, :y => cell[:y] + 1 },
           { :x => cell[:x] - 1, :y => cell[:y] - 1 }
         ].each do |neighbor|
-          horizontal_neighbor_count += 1 if @live_cells.include?(neighbor)
+          neighbor_count += 1 if @live_cells.include?(neighbor)
         end
-        horizontal_neighbor_count.between?(2, 3)
+        neighbor_count.between?(2, 3)
       end
       @live_cells = survivors
     end
