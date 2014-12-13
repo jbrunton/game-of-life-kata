@@ -18,7 +18,7 @@ describe "Rules" do
   end
   
   describe "Survival" do
-    it "keeps cells with two neighbors alive" do
+    it "keeps cells with 2 or 3 neighbors alive" do
       initialize_board \
         [0,0,0],
         [1,1,1],
