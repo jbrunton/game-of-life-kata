@@ -8,20 +8,18 @@ describe "Game" do
     
     def tick
       survivors = @live_cells.select do |cell|
-        neighbor_count = 0
-        [
+        neighbors = [
           { :x => cell[:x] - 1, :y => cell[:y] },
           { :x => cell[:x] + 1, :y => cell[:y] },
-          { :x => cell[:x], :y => cell[:y] - 1 },
-          { :x => cell[:x], :y => cell[:y] + 1 },
+          { :x => cell[:x],     :y => cell[:y] - 1 },
+          { :x => cell[:x],     :y => cell[:y] + 1 },
           { :x => cell[:x] - 1, :y => cell[:y] + 1 },
           { :x => cell[:x] + 1, :y => cell[:y] - 1 },
           { :x => cell[:x] + 1, :y => cell[:y] + 1 },
           { :x => cell[:x] - 1, :y => cell[:y] - 1 }
-        ].each do |neighbor|
-          neighbor_count += 1 if @live_cells.include?(neighbor)
-        end
-        neighbor_count.between?(2, 3)
+        ]
+        live_neighbors = neighbors.select { |neighbor| @live_cells.include?(neighbor) }
+        live_neighbors.size.between?(2, 3)
       end
       @live_cells = survivors
     end
