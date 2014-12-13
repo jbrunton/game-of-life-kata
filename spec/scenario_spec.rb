@@ -16,4 +16,18 @@ describe "Rules" do
         [0,0,0]
     end
   end
+  
+  describe "Survival" do
+    it "keeps cells with two neighbors alive" do
+      initialize_board \
+        [0,0,0],
+        [1,1,1],
+        [0,1,0]
+      tick
+      expect_board \
+        [0,0,0],
+        [1,1,1],
+        [0,1,0]
+    end
+  end
 end

@@ -7,7 +7,23 @@ describe "Game" do
     end
     
     def tick
-      @live_cells = []
+      survivors = @live_cells.select do |cell|
+        horizontal_neighbor_count = 0
+        [
+          { :x => cell[:x] - 1, :y => cell[:y] },
+          { :x => cell[:x] + 1, :y => cell[:y] },
+          { :x => cell[:x], :y => cell[:y] - 1 },
+          { :x => cell[:x], :y => cell[:y] + 1 },
+          { :x => cell[:x] - 1, :y => cell[:y] + 1 },
+          { :x => cell[:x] + 1, :y => cell[:y] - 1 },
+          { :x => cell[:x] + 1, :y => cell[:y] + 1 },
+          { :x => cell[:x] - 1, :y => cell[:y] - 1 }
+        ].each do |neighbor|
+          horizontal_neighbor_count += 1 if @live_cells.include?(neighbor)
+        end
+        horizontal_neighbor_count.between?(2, 3)
+      end
+      @live_cells = survivors
     end
   end
   
@@ -32,6 +48,30 @@ describe "Game" do
       game = Game.new [{ :x => 1, :y => 1 }]
       game.tick
       expect(game.live_cells).to_not include({ :x => 1, :y => 1 })
+    end
+    
+    it "keeps alive cells with 2 horizontal neighbors" do
+      game = Game.new [{ :x => 0, :y => 0}, { :x => 1, :y => 0}, { :x => 2, :y => 0}]
+      game.tick
+      expect(game.live_cells).to include({ :x => 1, :y => 0 })
+    end
+    
+    it "keeps alive cells with 2 vertical neighbors" do
+      game = Game.new [{ :x => 0, :y => 0}, { :x => 0, :y => 1}, { :x => 0, :y => 2}]
+      game.tick
+      expect(game.live_cells).to include({ :x => 0, :y => 1 })
+    end
+    
+    it "keeps alive cells with 2 diagonal neighbors" do
+      game = Game.new [{ :x => 0, :y => 1}, { :x => 1, :y => 0}, { :x => 2, :y => 1}]
+      game.tick
+      expect(game.live_cells).to include({ :x => 1, :y => 0 })
+    end
+    
+    it "keeps alive cells with 3 neighbors" do
+      game = Game.new [{ :x => 0, :y => 0}, { :x => 1, :y => 0}, { :x => 2, :y => 0}, { :x => 1, :y => 1 }]
+      game.tick
+      expect(game.live_cells).to include({ :x => 1, :y => 0 })
     end
   end
 end
