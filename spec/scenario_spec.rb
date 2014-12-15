@@ -44,4 +44,18 @@ describe "Rules" do
         [0,1,0]
     end
   end
+  
+  describe "Reproduction" do
+    it "revives dead cells with precisely 3 neighbors" do
+      initialize_board \
+        [0,1,0],
+        [0,1,0],
+        [0,1,0]
+      tick
+      expect_board \
+        [0,0,0],
+        [1,1,1],
+        [0,0,0]
+    end
+  end
 end

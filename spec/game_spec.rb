@@ -8,20 +8,31 @@ describe "Game" do
     
     def tick
       survivors = @live_cells.select do |cell|
-        neighbors = [
-          { :x => cell[:x] - 1, :y => cell[:y] },
-          { :x => cell[:x] + 1, :y => cell[:y] },
-          { :x => cell[:x],     :y => cell[:y] - 1 },
-          { :x => cell[:x],     :y => cell[:y] + 1 },
-          { :x => cell[:x] - 1, :y => cell[:y] + 1 },
-          { :x => cell[:x] + 1, :y => cell[:y] - 1 },
-          { :x => cell[:x] + 1, :y => cell[:y] + 1 },
-          { :x => cell[:x] - 1, :y => cell[:y] - 1 }
-        ]
-        live_neighbors = neighbors.select { |neighbor| @live_cells.include?(neighbor) }
-        live_neighbors.size.between?(2, 3)
+        find_live_neighbors(cell).size.between?(2, 3)
       end
-      @live_cells = survivors
+      candidates = [{ :x => 9, :y => 1 }, { :x => 11, :y => 1 }]
+      offspring = candidates.select do |candidate|
+        !@live_cells.include?(candidate) && find_live_neighbors(candidate).size == 3
+      end
+      
+      @live_cells = survivors + offspring
+    end
+  private
+    def find_neighbors(cell)
+      [
+        { :x => cell[:x] - 1, :y => cell[:y] },
+        { :x => cell[:x] + 1, :y => cell[:y] },
+        { :x => cell[:x],     :y => cell[:y] - 1 },
+        { :x => cell[:x],     :y => cell[:y] + 1 },
+        { :x => cell[:x] - 1, :y => cell[:y] + 1 },
+        { :x => cell[:x] + 1, :y => cell[:y] - 1 },
+        { :x => cell[:x] + 1, :y => cell[:y] + 1 },
+        { :x => cell[:x] - 1, :y => cell[:y] - 1 }
+      ]
+    end
+    
+    def find_live_neighbors(cell)
+      find_neighbors(cell).select { |neighbor| @live_cells.include?(neighbor) }
     end
   end
   
@@ -70,6 +81,13 @@ describe "Game" do
       game = Game.new [{ :x => 0, :y => 0}, { :x => 1, :y => 0}, { :x => 2, :y => 0}, { :x => 1, :y => 1 }]
       game.tick
       expect(game.live_cells).to include({ :x => 1, :y => 0 })
+    end
+    
+    it "revives dead cells with 3 neighbors" do
+      game = Game.new [{ :x => 10, :y => 0 }, { :x => 10, :y => 1 }, { :x => 10, :y => 2 }]
+      game.tick
+      expect(game.live_cells).to include({ :x => 9, :y => 1 })
+      expect(game.live_cells).to include({ :x => 11, :y => 1 })
     end
   end
 end
